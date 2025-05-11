@@ -1,6 +1,7 @@
 "use server"
 
 import { auth } from "@/lib/auth";
+import { APIError } from "better-auth/api";
 import {headers } from "next/headers";
 
 export async function signInEmailAction(formData: FormData) {
@@ -19,8 +20,8 @@ export async function signInEmailAction(formData: FormData) {
         });
         return { error: null };
     } catch (err) {
-        if (err instanceof Error) {
-            return { error: "Opps! ada yang salah saat Login" }
+        if (err instanceof APIError) {
+            return { error: err.message }
         }
 
         return { error: "Internal Server Error" }

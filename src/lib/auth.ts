@@ -3,6 +3,9 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/db/prisma";
 import { hashPassword, verifyPassword } from "@/lib/argon2";
 import { nextCookies } from "better-auth/next-js";
+import { createAuthMiddleware } from "better-auth/api";
+import { VALID_DOMAINS } from "./utils";
+import { APIError } from "better-auth/api";
  
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
@@ -16,6 +19,20 @@ export const auth = betterAuth({
             hash: hashPassword,
             verify: verifyPassword
         }
+    },
+    hooks: {
+        before: createAuthMiddleware( async (ctx) => {
+            if (ctx.path === "/sign-up/email"){
+                const email = String(ctx.body.email);
+                const domain = email.split("@")[1];
+
+                if (!VALID_DOMAINS().includes(domain)) {
+                    throw new APIError("BAD_REQUEST", {
+                        message: "Invalid Domain"
+                    })
+                }
+            }
+        }),
     },
     session: {
         expiresIn: 30 * 24 * 60 * 60,
