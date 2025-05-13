@@ -37,7 +37,7 @@ const navbarItems = [
 export default function Navbar() {
     const pathname = usePathname();
     return (
-        <nav className="sticky top-0 z-50 w-full">
+        <nav className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="max-w-7xl mx-auto px-4 border-b">
                 <div className="flex h-16 justify-between items-center">
                     <div className="flex items-center">
